@@ -21,7 +21,7 @@ export default function CartPage() {
   const [restaurantSettings, setRestaurantSettings] = useState({
     restaurantName: 'AFLAX Restaurant',
     phone: '61 0723233',
-    whatsapp: '+252771989981',
+    whatsapp: '+252610723233',
     location: 'Degmada Yaqshiid, Somalia',
   });
 
@@ -446,7 +446,7 @@ export default function CartPage() {
                 </div>
                 <div className="contact-line">
                   <span>💬 WhatsApp:</span>
-                  <strong>{restaurantSettings.whatsapp || '+252 77 1989981'}</strong>
+                  <strong>{restaurantSettings.whatsapp || '+252610723233'}</strong>
                 </div>
                 <div className="contact-tip">
                   💡 Dalabkaaga waxaa si toos ah loogu gudbin doonaa WhatsApp-ka maqaayadda marka aad
@@ -656,7 +656,7 @@ export default function CartPage() {
                   >
                     <span className="wa-icon">💬</span>
                     <span className="wa-text">
-                      WhatsApp-ka u dir dalabka (+252 77 1989981)
+                      WhatsApp-ka u dir dalabka (+252610723233)
                     </span>
                   </button>
                   <small className="wa-hint">

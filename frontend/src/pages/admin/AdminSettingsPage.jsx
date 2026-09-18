@@ -288,7 +288,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) =>
                   setFormData({ ...formData, whatsapp: e.target.value })
                 }
-                placeholder="e.g. +252771989981"
+                placeholder="e.g. +252610723233"
               />
               <small style={{ fontSize: '11px', color: '#6b7280' }}>
                 Used for direct customer food orders and table reservation messages

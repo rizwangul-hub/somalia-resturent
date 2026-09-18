@@ -18,7 +18,7 @@ const restaurantSettingsSchema = new mongoose.Schema(
       type: String,
       required: [true, 'WhatsApp number is required'],
       trim: true,
-      default: '+252771989981',
+      default: '+252610723233',
     },
     location: {
       type: String,
@@ -59,7 +59,7 @@ restaurantSettingsSchema.statics.getSettings = async function () {
     settings = await this.create({
       restaurantName: 'AFLAX Restaurant',
       phone: '61 0723233',
-      whatsapp: '+252771989981',
+      whatsapp: '+252610723233',
       location: 'Degmada Yaqshiid, Somalia',
       currency: 'USD',
       description: '',

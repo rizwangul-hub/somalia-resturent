@@ -87,7 +87,8 @@ export default function Navbar() {
             aria-controls="mobile-nav-drawer"
             aria-label={mobileOpen ? 'Xir menu-ga' : 'Fur menu-ga navigation-ka'}
           >
-            {mobileOpen ? '✕' : '☰'}
+            <span className="menu-btn-icon" aria-hidden="true">{mobileOpen ? '✕' : '☰'}</span>
+            <span className="menu-btn-text">Menu</span>
           </button>
         </div>
       </div>

@@ -1,9 +1,9 @@
 /**
  * WhatsApp Integration Utilities for AFLAX Restaurant
- * WhatsApp Destination: +252771989981 (Degmada Yaqshiid, Somalia)
+ * WhatsApp Destination: +252610723233 (Degmada Yaqshiid, Somalia)
  */
 
-const RESTAURANT_WHATSAPP_NUMBER = '252771989981';
+const RESTAURANT_WHATSAPP_NUMBER = '252610723233';
 
 const MONTH_NAMES = [
   'January',

@@ -5,7 +5,7 @@ export default function ContactSection() {
   const [settings, setSettings] = useState({
     restaurantName: 'AFLAX Restaurant',
     phone: '61 0723233',
-    whatsapp: '+252771989981',
+    whatsapp: '+252610723233',
     location: 'Degmada Yaqshiid, Somalia',
   });
 
@@ -28,7 +28,7 @@ export default function ContactSection() {
     };
   }, []);
 
-  const cleanWhatsApp = (settings.whatsapp || '+252771989981').replace(/[^0-9]/g, '');
+  const cleanWhatsApp = (settings.whatsapp || '+252610723233').replace(/[^0-9]/g, '');
   const cleanPhone = (settings.phone || '61 0723233').replace(/[^0-9]/g, '');
 
   return (
@@ -69,7 +69,7 @@ export default function ContactSection() {
             <p>
               Fariin toos ah noo soo dir ama ku dalbo
               <br />
-              <strong className="wa-number">{settings.whatsapp || '+252 77 1989981'}</strong>
+              <strong className="wa-number">{settings.whatsapp || '+252610723233'}</strong>
             </p>
             <a
               href={`https://wa.me/${cleanWhatsApp}`}

@@ -93,7 +93,7 @@ export default function AboutSection() {
                   </div>
                   <div className="stat-row">
                     <span className="stat-label">Dalbashada Tooska ah:</span>
-                    <strong className="stat-value">WhatsApp (+252 77 1989981)</strong>
+                    <strong className="stat-value">WhatsApp (+252610723233)</strong>
                   </div>
                   <div className="stat-row">
                     <span className="stat-label">Waqtiga Adeegga:</span>

@@ -11,7 +11,7 @@ export default function BookingPage() {
   const [restaurantSettings, setRestaurantSettings] = useState({
     restaurantName: 'AFLAX Restaurant',
     phone: '61 0723233',
-    whatsapp: '+252771989981',
+    whatsapp: '+252610723233',
     location: 'Degmada Yaqshiid, Somalia',
   });
 
@@ -342,7 +342,7 @@ export default function BookingPage() {
                 </div>
                 <div className="contact-line">
                   <span>💬 WhatsApp:</span>
-                  <strong>{restaurantSettings.whatsapp || '+252 77 1989981'}</strong>
+                  <strong>{restaurantSettings.whatsapp || '+252610723233'}</strong>
                 </div>
                 <div className="contact-tip">
                   💡 Ka dib markii aad codsato, waxaad heli doontaa fariin toos ah oo aad WhatsApp ugu
@@ -428,7 +428,7 @@ export default function BookingPage() {
                   >
                     <span className="wa-icon">💬</span>
                     <span className="wa-text">
-                      WhatsApp-ka u dir ballanta (+252 77 1989981)
+                      WhatsApp-ka u dir ballanta (+252610723233)
                     </span>
                   </button>
                   <small className="wa-hint">

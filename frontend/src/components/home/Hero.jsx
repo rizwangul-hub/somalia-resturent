@@ -48,12 +48,12 @@ export default function Hero() {
               <div className="quick-meta-item">
                 <span className="quick-meta-icon">💬</span>
                 <a
-                  href="https://wa.me/252771989981"
+                  href="https://wa.me/252610723233"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="quick-meta-link"
                 >
-                  WhatsApp: +252 77 1989981
+                  WhatsApp: +252610723233
                 </a>
               </div>
             </div>
@@ -122,7 +122,7 @@ export default function Hero() {
             <span className="ribbon-icon">📱</span>
             <div>
               <strong>Dalbo Toos WhatsApp</strong>
-              <p>Xaqiijin degdeg ah: +252771989981</p>
+              <p>Xaqiijin degdeg ah: +252610723233</p>
             </div>
           </div>
         </div>
