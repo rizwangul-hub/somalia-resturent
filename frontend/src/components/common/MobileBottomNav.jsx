@@ -29,7 +29,7 @@ export default function MobileBottomNav() {
         className={({ isActive }) => `bottom-nav-item ${isActive ? 'active' : ''}`}
       >
         <span className="bottom-nav-icon">📅</span>
-        <span className="bottom-nav-label">Dalbo Miis</span>
+        <span className="bottom-nav-label"><span className="bottom-nav-prefix">Dalbo </span>Miis</span>
       </NavLink>
 
       <NavLink
