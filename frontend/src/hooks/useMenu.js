@@ -1,17 +1,19 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { menuService, categoryService } from '../services/api';
+import { fallbackCategories, fallbackMenuItems } from '../data/fallbackMenu';
 
 /**
  * Custom hook to manage menu data, categories, search, and filtering
  * - Fetches real menu and category data from backend API
+ * - Gracefully falls back to confirmed 63 AFLAX items if backend is connecting
  * - Filters instantly by category and search keyword without unnecessary server spam
  */
 export function useMenu() {
-  const [categories, setCategories] = useState([]);
-  const [allMenuItems, setAllMenuItems] = useState([]);
+  const [categories, setCategories] = useState(fallbackCategories);
+  const [allMenuItems, setAllMenuItems] = useState(fallbackMenuItems);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [reloadTrigger, setReloadTrigger] = useState(0);
 
@@ -23,18 +25,18 @@ export function useMenu() {
       .then(([catsRes, menuRes]) => {
         if (!isMounted) return;
 
-        if (catsRes && catsRes.data) {
+        if (catsRes && catsRes.data && catsRes.data.length > 0) {
           setCategories(catsRes.data);
         }
 
-        if (menuRes && menuRes.data) {
+        if (menuRes && menuRes.data && menuRes.data.length > 0) {
           setAllMenuItems(menuRes.data);
         }
       })
       .catch((err) => {
         if (!isMounted) return;
-        console.error('Error fetching menu data:', err);
-        setError(err.message || 'Cuntooyinka lama soo qaadi karin. Fadlan hubi server-ka.');
+        setError(err.message);
+        console.warn('Backend menu sync notice, using confirmed AFLAX menu fallback:', err.message);
       })
       .finally(() => {
         if (isMounted) setLoading(false);

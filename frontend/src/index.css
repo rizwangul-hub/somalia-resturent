@@ -568,6 +568,50 @@ header.site-header.header-scrolled,
   margin-bottom: 12px;
 }
 
+/* ================= MOBILE TOP NAVIGATION STRIP ================= */
+.mobile-nav-strip {
+  display: none;
+  background: rgba(12, 14, 20, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(212, 154, 61, 0.22);
+  padding: 8px 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mobile-nav-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-strip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c0c6d6;
+  text-decoration: none;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.mobile-strip-item.active,
+.mobile-strip-item:hover {
+  background: var(--gold-gradient);
+  color: #07080b;
+  border-color: transparent;
+  box-shadow: var(--shadow-gold-sm);
+}
+
 /* ================= MOBILE BOTTOM NAVIGATION (NATIVE APP FEEL) ================= */
 .mobile-bottom-nav {
   display: none;
@@ -2553,6 +2597,12 @@ footer {
 
   .mobile-menu-btn {
     display: inline-flex;
+  }
+
+  /* Show Mobile Navigation Strip below header */
+  .mobile-nav-strip {
+    display: flex;
+    justify-content: space-around;
   }
 
   /* Show Sticky Mobile Bottom Nav */

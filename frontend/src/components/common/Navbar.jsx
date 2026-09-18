@@ -93,6 +93,22 @@ export default function Navbar() {
         </div>
       </div>
 
+      {/* Mobile Navigation Strip (Always visible on mobile viewports) */}
+      <nav className="mobile-nav-strip" aria-label="Mobile Quick Navigation">
+        <NavLink to="/" end className={({ isActive }) => `mobile-strip-item ${isActive ? 'active' : ''}`}>
+          <span>🏠 Hoyga</span>
+        </NavLink>
+        <NavLink to="/menu" className={({ isActive }) => `mobile-strip-item ${isActive ? 'active' : ''}`}>
+          <span>🍽️ Menu</span>
+        </NavLink>
+        <NavLink to="/booking" className={({ isActive }) => `mobile-strip-item ${isActive ? 'active' : ''}`}>
+          <span>📅 Dalbo Miis</span>
+        </NavLink>
+        <NavLink to="/contact" className={({ isActive }) => `mobile-strip-item ${isActive ? 'active' : ''}`}>
+          <span>📞 Contact</span>
+        </NavLink>
+      </nav>
+
       {/* Mobile Drawer Navigation (When open) */}
       {mobileOpen && (
         <>
