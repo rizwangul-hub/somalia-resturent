@@ -162,6 +162,10 @@ export const adminService = {
       method: 'PATCH',
       body: JSON.stringify(data),
     }),
+  deleteMenuItem: (id) =>
+    apiRequest(`/admin/menu/${id}`, {
+      method: 'DELETE',
+    }),
   toggleMenuItemAvailability: (id, isAvailable) =>
     apiRequest(`/admin/menu/${id}/availability`, {
       method: 'PATCH',
@@ -177,6 +181,10 @@ export const adminService = {
     apiRequest(`/admin/categories/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
+    }),
+  deleteCategory: (id) =>
+    apiRequest(`/admin/categories/${id}`, {
+      method: 'DELETE',
     }),
   getSettings: () => apiRequest('/admin/settings', { method: 'GET' }),
   updateSettings: (data) =>

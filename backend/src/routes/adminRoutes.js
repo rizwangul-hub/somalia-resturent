@@ -42,6 +42,9 @@ router.post('/menu', adminController.createMenuItem);
 // PATCH /api/admin/menu/:id — Update existing menu item
 router.patch('/menu/:id', adminController.updateMenuItem);
 
+// DELETE /api/admin/menu/:id — Delete menu item
+router.delete('/menu/:id', adminController.deleteMenuItem);
+
 // PATCH /api/admin/menu/:id/availability — Toggle availability
 router.patch('/menu/:id/availability', adminController.toggleMenuItemAvailability);
 
@@ -53,6 +56,9 @@ router.post('/categories', adminController.createCategory);
 
 // PATCH /api/admin/categories/:id — Update existing category
 router.patch('/categories/:id', adminController.updateCategory);
+
+// DELETE /api/admin/categories/:id — Delete category
+router.delete('/categories/:id', adminController.deleteCategory);
 
 // GET /api/admin/settings — Get restaurant settings
 router.get('/settings', adminController.getAdminSettings);

@@ -45,6 +45,52 @@ export default function AdminMenuPage() {
   const [categorySubmitting, setCategorySubmitting] = useState(false);
   const [categoryFormError, setCategoryFormError] = useState('');
 
+  // Delete Confirmation State
+  const [deleteConfirmTarget, setDeleteConfirmTarget] = useState(null); // { type: 'item' | 'category', data: item }
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
+
+  const handleOpenDeleteItem = (item) => {
+    setDeleteError('');
+    setDeleteConfirmTarget({ type: 'item', data: item });
+  };
+
+  const handleOpenDeleteCategory = (category) => {
+    setDeleteError('');
+    setDeleteConfirmTarget({ type: 'category', data: category });
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteConfirmTarget || isDeleting) return;
+    setIsDeleting(true);
+    setDeleteError('');
+
+    try {
+      if (deleteConfirmTarget.type === 'item') {
+        const res = await adminService.deleteMenuItem(deleteConfirmTarget.data._id);
+        if (res && res.success) {
+          setItems((prev) => prev.filter((i) => i._id !== deleteConfirmTarget.data._id));
+          setDeleteConfirmTarget(null);
+        } else {
+          throw new Error(res?.message || 'Failed to delete menu item');
+        }
+      } else if (deleteConfirmTarget.type === 'category') {
+        const res = await adminService.deleteCategory(deleteConfirmTarget.data._id);
+        if (res && res.success) {
+          setCategories((prev) => prev.filter((c) => c._id !== deleteConfirmTarget.data._id));
+          setDeleteConfirmTarget(null);
+        } else {
+          throw new Error(res?.message || 'Failed to delete category');
+        }
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+      setDeleteError(err.message || 'Error occurred while deleting');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // Fetch menu items and categories
   const fetchMenuData = async (isRefresh = false) => {
     if (isRefresh) {
@@ -491,13 +537,24 @@ export default function AdminMenuPage() {
                           </button>
                         </td>
                         <td style={{ textAlign: 'right' }}>
-                          <button
-                            type="button"
-                            className="admin-action-btn-sm"
-                            onClick={() => handleOpenEditItemModal(item)}
-                          >
-                            ✏️ Edit
-                          </button>
+                          <div className="admin-actions-cell">
+                            <button
+                              type="button"
+                              className="admin-action-btn-sm"
+                              onClick={() => handleOpenEditItemModal(item)}
+                              title="Edit item details"
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="admin-action-btn-danger"
+                              onClick={() => handleOpenDeleteItem(item)}
+                              title="Delete this menu item"
+                            >
+                              🗑️ Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -556,13 +613,23 @@ export default function AdminMenuPage() {
                       </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
-                      <button
-                        type="button"
-                        className="admin-action-btn-sm"
-                        onClick={() => handleOpenEditCategoryModal(cat)}
-                      >
-                        ✏️ Edit
-                      </button>
+                      <div className="admin-actions-cell">
+                        <button
+                          type="button"
+                          className="admin-action-btn-sm"
+                          onClick={() => handleOpenEditCategoryModal(cat)}
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-action-btn-danger"
+                          onClick={() => handleOpenDeleteCategory(cat)}
+                          title="Delete category"
+                        >
+                          🗑️ Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -671,15 +738,18 @@ export default function AdminMenuPage() {
                   />
                 </div>
 
-                {/* Image Upload with Preview */}
+                {/* Image Upload with Preview & Cloudinary Indicator */}
                 <div className="admin-form-group">
-                  <label>Item Image</label>
+                  <div className="admin-label-row">
+                    <label htmlFor="admin-item-file-input">Item Image</label>
+                    <span className="admin-cloudinary-badge">☁️ Cloudinary Auto-Upload</span>
+                  </div>
                   <div className="admin-image-upload-box">
                     <div className="admin-preview-wrapper">
                       {itemImagePreview ? (
                         <img
                           src={itemImagePreview}
-                          alt="Preview"
+                          alt="Dish Preview"
                           className="admin-preview-img"
                         />
                       ) : (
@@ -687,15 +757,34 @@ export default function AdminMenuPage() {
                       )}
                     </div>
                     <div className="admin-file-input-wrapper">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageFileChange}
-                      />
+                      <div className="admin-file-controls">
+                        <label htmlFor="admin-item-file-input" className="admin-file-custom-btn">
+                          📷 Choose New Photo
+                        </label>
+                        <input
+                          id="admin-item-file-input"
+                          type="file"
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          onChange={handleImageFileChange}
+                        />
+                        {itemImagePreview && (
+                          <button
+                            type="button"
+                            className="admin-remove-image-btn"
+                            onClick={() => {
+                              setItemFormData((prev) => ({ ...prev, image: '' }));
+                              setItemImagePreview('');
+                            }}
+                          >
+                            ✕ Clear Image
+                          </button>
+                        )}
+                      </div>
                       <p className="admin-file-help">
                         {editingItem
-                          ? 'Leave empty to preserve existing Cloudinary / dish image.'
-                          : 'Select an image file (JPG, PNG, WebP up to 5MB).'}
+                          ? 'Leave unchanged to preserve the current Cloudinary dish photo.'
+                          : 'Select an image file (JPG, PNG, WebP up to 5MB). Photo will be uploaded to Cloudinary.'}
                       </p>
                     </div>
                   </div>
@@ -901,6 +990,78 @@ export default function AdminMenuPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= DELETE CONFIRMATION MODAL ================= */}
+      {deleteConfirmTarget && (
+        <div className="admin-modal-overlay" onClick={() => !isDeleting && setDeleteConfirmTarget(null)}>
+          <div
+            className="admin-modal-content admin-confirm-modal"
+            style={{ maxWidth: '480px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="admin-modal-header" style={{ borderBottomColor: 'rgba(239, 68, 68, 0.2)' }}>
+              <h3 style={{ color: '#f87171', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>⚠️</span> Confirm Deletion
+              </h3>
+              <button
+                type="button"
+                className="admin-modal-close"
+                disabled={isDeleting}
+                onClick={() => setDeleteConfirmTarget(null)}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="admin-modal-body">
+              {deleteError && (
+                <div className="admin-error-banner" style={{ marginBottom: '16px' }}>
+                  ⚠️ {deleteError}
+                </div>
+              )}
+              <p style={{ fontSize: '0.98rem', lineHeight: '1.6', color: '#e2e8f0', margin: 0 }}>
+                Ma hubtaa inaad si rasmi ah u tirtirto{' '}
+                <strong style={{ color: '#fff', textDecoration: 'underline' }}>
+                  "{deleteConfirmTarget.data.name}"
+                </strong>
+                ?
+              </p>
+              {deleteConfirmTarget.type === 'item' && (
+                <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(239, 68, 68, 0.08)', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                  <p style={{ margin: 0, color: '#fca5a5', fontSize: '0.84rem', lineHeight: '1.5' }}>
+                    Tani waxay cuntadan ka saari doontaa shabakadda macaamiisha iyo backend-ka, sawirka ku jira Cloudinary-na waa la tirtiri doonaa.
+                  </p>
+                </div>
+              )}
+              {deleteConfirmTarget.type === 'category' && (
+                <div style={{ marginTop: '12px', padding: '10px 14px', background: 'rgba(245, 158, 11, 0.08)', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                  <p style={{ margin: 0, color: '#fcd34d', fontSize: '0.84rem', lineHeight: '1.5' }}>
+                    Fiiro gaar ah: Qaybtaan waa la tirtiri karaa kaliya haddii aysan jirin cuntooyin ku xiran.
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="admin-modal-footer">
+              <button
+                type="button"
+                className="admin-secondary-btn"
+                disabled={isDeleting}
+                onClick={() => setDeleteConfirmTarget(null)}
+              >
+                Cancel (Jooji)
+              </button>
+              <button
+                type="button"
+                className="admin-action-btn-danger"
+                disabled={isDeleting}
+                onClick={handleConfirmDelete}
+                style={{ padding: '10px 20px', fontSize: '0.9rem' }}
+              >
+                {isDeleting ? 'Deleting...' : '🗑️ Yes, Delete (Tirtir)'}
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -7,7 +7,7 @@ const RestaurantSettings = require('../models/RestaurantSettings');
 const slugify = require('../utils/slugify');
 const escapeRegex = require('../utils/escapeRegex');
 const { uploadToCloudinary } = require('../services/cloudinaryService');
-const { isCloudinaryConfigured } = require('../config/cloudinary');
+const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary');
 
 /**
  * Get Admin Dashboard Overview Statistics & Recent Activity
@@ -567,6 +567,49 @@ const updateMenuItem = async (req, res, next) => {
 };
 
 /**
+ * Delete a Menu Item
+ * DELETE /api/admin/menu/:id
+ */
+const deleteMenuItem = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid menu item ID',
+      });
+    }
+
+    const item = await MenuItem.findById(id);
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: 'Menu item not found',
+      });
+    }
+
+    // Clean up image from Cloudinary if hosted there
+    if (item.cloudinaryPublicId && isCloudinaryConfigured()) {
+      try {
+        await cloudinary.uploader.destroy(item.cloudinaryPublicId);
+      } catch (cloudErr) {
+        console.warn('Cloudinary delete warning:', cloudErr.message);
+      }
+    }
+
+    await MenuItem.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: `Menu item "${item.name}" deleted successfully`,
+      data: { id: item._id, name: item.name },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
  * Get all categories for Admin (including counts)
  * GET /api/admin/categories
  */
@@ -712,6 +755,49 @@ const updateCategory = async (req, res, next) => {
       success: true,
       message: 'Category updated successfully',
       data: updatedCategory,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Delete a Category
+ * DELETE /api/admin/categories/:id
+ */
+const deleteCategory = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid category ID',
+      });
+    }
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({
+        success: false,
+        message: 'Category not found',
+      });
+    }
+
+    // Safety check: ensure no menu items are attached to this category
+    const attachedItemsCount = await MenuItem.countDocuments({ category: id });
+    if (attachedItemsCount > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Cannot delete category "${category.name}" because ${attachedItemsCount} menu items are currently assigned to it. Please reassign or delete them first.`,
+      });
+    }
+
+    await Category.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: `Category "${category.name}" deleted successfully`,
+      data: { id: category._id, name: category.name },
     });
   } catch (error) {
     next(error);
@@ -1081,9 +1167,11 @@ module.exports = {
   toggleMenuItemAvailability,
   createMenuItem,
   updateMenuItem,
+  deleteMenuItem,
   getAdminCategories,
   createCategory,
   updateCategory,
+  deleteCategory,
   getDashboardAnalytics,
   getAdminSettings,
   updateAdminSettings,
